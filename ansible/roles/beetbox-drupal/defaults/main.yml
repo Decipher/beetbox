@@ -4,6 +4,8 @@ drupal_enable_modules: []
 drupal_account_name: admin
 drupal_account_pass: admin
 drupal_install_site: no
+drupal_install_db: no
+drupal_install_updb: no
 drupal_build_makefile: no
 drupal_distro: no
 drupal_distro_makefile: /vagrant/drupal-org.make.yml

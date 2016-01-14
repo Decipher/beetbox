@@ -18,6 +18,27 @@
   notify: restart webserver
   when: "'Successful' not in drupal_site_installed.stdout"
 
+- name: Drop existing database with drush.
+  command: >
+    {{ drush_path }} sql-drop -y
+    chdir={{ beet_web }}
+  when: "'Successful' not in drupal_site_installed.stdout and drupal_install_db"
+
+- name: Import database.
+  mysql_db:
+    name: "{{ beet_mysql_database }}"
+    login_user: "{{ beet_mysql_user }}"
+    login_password: "{{ beet_mysql_password }}"
+    state: import
+    target: "{{ drupal_install_db }}"
+  when: "'Successful' not in drupal_site_installed.stdout and drupal_install_db"
+
+- name: Run Drupal update.php.
+  command: >
+    {{ drush_path }} updb -y
+    chdir={{ beet_web }}
+  when: "'Successful' not in drupal_site_installed.stdout and drupal_install_updb"
+
 - name: Install configured modules with drush.
   command: >
     {{ drush_path }} pm-enable -y {{ drupal_enable_modules | join(" ") }}
